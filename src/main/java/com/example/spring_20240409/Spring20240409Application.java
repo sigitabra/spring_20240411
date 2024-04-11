@@ -28,8 +28,7 @@ public class Spring20240409Application {
 
 
         System.out.println("********************************************************************");
-
-        Boolean run = true;
+        boolean run = true;
         int recordsInPage = 5;
         int currentPageNum = 0;
         Pageable firstPage=PageRequest.of(0, recordsInPage);

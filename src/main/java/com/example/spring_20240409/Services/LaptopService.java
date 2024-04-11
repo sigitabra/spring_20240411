@@ -14,7 +14,7 @@ import java.util.List;
 @Service
 public class LaptopService {
     private LaptopRepository laptopRepository;
-    public static final String line = "--------------------------------------------------------------------";
+    public static final String LINE = "--------------------------------------------------------------------";
     public void addTestLaptops() {
         List<Laptop> laptops = new ArrayList<>();
         for (int i = 1; i < 25; i++) {
@@ -74,13 +74,13 @@ public class LaptopService {
     public void printLaptopsPage(Pageable pageable) {
         int totalPages=getNumOfPages(pageable);
         System.out.printf(getFormat(pageable.getPageNumber(),totalPages), "", pageable.getPageNumber() + 1, totalPages);
-        System.out.println(line);
+        System.out.println(LINE);
         System.out.printf(Laptop.FORMATAS + "%n", "Company", "Model", "Procesor", "Memory", "Price");
-        System.out.println(line);
+        System.out.println(LINE);
         for (Laptop l : this.laptopRepository.findAll(pageable)) {
             System.out.println(l);
         }
-        System.out.println(line);
+        System.out.println(LINE);
         System.out.printf(getFormat(pageable.getPageNumber(),totalPages), "", pageable.getPageNumber() + 1, totalPages);
     }
 }
