@@ -1,4 +1,4 @@
-package com.example.spring_20240409.Services;
+package com.example.spring_20240409.services;
 
 import com.example.spring_20240409.entities.Laptop;
 import com.example.spring_20240409.repositories.LaptopRepository;
@@ -15,6 +15,7 @@ import java.util.List;
 public class LaptopService {
     private LaptopRepository laptopRepository;
     public static final String LINE = "--------------------------------------------------------------------";
+
     public void addTestLaptops() {
         List<Laptop> laptops = new ArrayList<>();
         for (int i = 1; i < 25; i++) {
@@ -29,7 +30,7 @@ public class LaptopService {
             }
             laptop.setProcessor("Processor-" + i);
             laptop.setMemoryGB(i + 1);
-            laptop.setPrice(i * 200);
+            laptop.setPrice(i * 200d);
             laptops.add(laptop);
         }
         this.laptopRepository.saveAllAndFlush(laptops);
@@ -56,31 +57,33 @@ public class LaptopService {
         }
     }
 
-    public int getNumOfPages(Pageable pageable) {
-        Page<Laptop> page = this.laptopRepository.findAll(pageable);
-        return page.getTotalPages();
+    public Page<Laptop> getLaptopPage(Pageable pageable) {
+        return this.laptopRepository.findAll(pageable);
     }
 
-    public static String getFormat(int curr, int total){
-        if (curr==0){
+    public static String getFormat(int curr, int total) {
+        if (curr == 0) {
             return "%50s %2s out of %2s [->] %n";
-        } else if(curr==total-1){
-            return "%50s [<-] %2s out of %2s %n";
-        } else{
-            return"%45s [<-] %2s out of %2s [->] %n";
         }
 
+        if (curr == total - 1) {
+            return "%50s [<-] %2s out of %2s %n";
+        }
+
+        return "%45s [<-] %2s out of %2s [->] %n";
     }
-    public void printLaptopsPage(Pageable pageable) {
-        int totalPages=getNumOfPages(pageable);
-        System.out.printf(getFormat(pageable.getPageNumber(),totalPages), "", pageable.getPageNumber() + 1, totalPages);
+
+    public void printLaptopsPage(Page<Laptop> page) {
+        int totalPages = page.getTotalPages();
+        int currentPage = page.getPageable().getPageNumber();
+        System.out.printf(getFormat(currentPage, totalPages), "", currentPage + 1, totalPages);
         System.out.println(LINE);
         System.out.printf(Laptop.FORMATAS + "%n", "Company", "Model", "Procesor", "Memory", "Price");
         System.out.println(LINE);
-        for (Laptop l : this.laptopRepository.findAll(pageable)) {
+        for (Laptop l : page) {
             System.out.println(l);
         }
         System.out.println(LINE);
-        System.out.printf(getFormat(pageable.getPageNumber(),totalPages), "", pageable.getPageNumber() + 1, totalPages);
+        System.out.printf(getFormat(currentPage, totalPages), "", currentPage + 1, totalPages);
     }
 }
