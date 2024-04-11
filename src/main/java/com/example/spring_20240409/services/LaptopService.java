@@ -64,12 +64,13 @@ public class LaptopService {
     public static String getFormat(int curr, int total) {
         if (curr == 0) {
             return "%50s %2s out of %2s [->] %n";
-        } else if (curr == total - 1) {
-            return "%50s [<-] %2s out of %2s %n";
-        } else {
-            return "%45s [<-] %2s out of %2s [->] %n";
         }
 
+        if (curr == total - 1) {
+            return "%50s [<-] %2s out of %2s %n";
+        }
+
+        return "%45s [<-] %2s out of %2s [->] %n";
     }
 
     public void printLaptopsPage(Page<Laptop> page) {
