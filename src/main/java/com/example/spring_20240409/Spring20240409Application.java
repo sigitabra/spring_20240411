@@ -1,11 +1,13 @@
 package com.example.spring_20240409;
 
-import com.example.spring_20240409.Services.LaptopService;
+import com.example.spring_20240409.entities.Laptop;
+import com.example.spring_20240409.services.LaptopService;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
@@ -31,25 +33,29 @@ public class Spring20240409Application {
         boolean run = true;
         int recordsInPage = 5;
         int currentPageNum = 0;
-        Pageable firstPage=PageRequest.of(0, recordsInPage);
-        int numOfpages=this.laptopService.getNumOfPages(firstPage);
+
+
         Scanner sc = new Scanner(System.in);
 
-        this.laptopService.printLaptopsPage(firstPage);
-
         while (run) {
+
+            Pageable pageable = PageRequest.of(currentPageNum, recordsInPage);
+            Page<Laptop> page = this.laptopService.getLaptopPage(pageable);
+            this.laptopService.printLaptopsPage(page);
+
             System.out.println("Navigate pages with < and >. Close window using X");
+
             switch (sc.nextLine().toUpperCase()) {
                 case ">" -> {
-                    if (currentPageNum < numOfpages - 1) {
-                        this.laptopService.printLaptopsPage(PageRequest.of(++currentPageNum, recordsInPage));
+                    if (currentPageNum < page.getTotalPages() - 1) {
+                        currentPageNum++;
                     } else {
                         System.out.println("Last page.");
                     }
                 }
                 case "<" -> {
                     if (currentPageNum > 0) {
-                        this.laptopService.printLaptopsPage(PageRequest.of(--currentPageNum, recordsInPage));
+                        currentPageNum--;
                     } else {
                         System.out.println("First page.");
                     }
